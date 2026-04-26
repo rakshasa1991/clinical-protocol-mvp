@@ -172,7 +172,7 @@ export async function POST(req: Request) {
       if (data.disclaimer) {
         children.push(
           new Paragraph({ text: 'Disclaimer', heading: HeadingLevel.TITLE }),
-          new Paragraph({ children: [new TextRun(data.disclaimer)], italics: true })
+          new Paragraph({ children: [new TextRun({ text: data.disclaimer, italics: true })] })
         )
       }
 
