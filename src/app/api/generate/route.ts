@@ -1,44 +1,22 @@
 import { NextResponse } from 'next/server'
 
-const SYSTEM_PROMPT = 'Return ONLY valid JSON. Keep content concise - max 1 sentence per section.'
+const SYSTEM_PROMPT = 'Return ONLY JSON.'
 
 export async function POST(req: Request) {
   try {
-    console.log('=== Generate API called ===')
-    const {
-      title,
-      therapeuticArea,
-      phase,
-      objective,
-    } = await req.json()
-
+    const { title, therapeuticArea, phase } = await req.json()
     console.log('Study:', title)
 
     if (!process.env.OPENAI_API_KEY) {
-      return NextResponse.json(
-        { error: 'OpenAI API key not configured' },
-        { status: 500 }
-      )
+      return NextResponse.json({ error: 'API key not configured' }, { status: 500 })
     }
 
-    const userPrompt = `Generate a clinical study protocol draft based on:
-
-Study: ${title || 'Not specified'}
-Therapeutic area: ${therapeuticArea || 'Not specified'}
-Phase: ${phase || 'Not specified'}
-Objective: ${objective || 'Not specified'}
-
-Return JSON with keys: protocol, sap_outline, icf_outline, warnings, gcp_suggestions, disclaimer.
-
-Protocol sections (1 sentence each): synopsis, background, objectives, study_design, study_population, eligibility_criteria, treatment_plan, efficacy_assessments, safety_assessments, statistical_considerations, ethics, monitoring_data_handling.
-
-SAP sections: analysis_populations, endpoints, analysis_approach.
-
-ICF sections: study_purpose, participation_overview, risks_and_benefits, voluntary_participation, participant_rights.
-
-Warnings: array of potential issues. GCP suggestions: array of wording improvements.
-
-IMPORTANT: Return ONLY raw JSON. No markdown. Compact content.`
+    const userPrompt = `Create clinical protocol JSON for: ${title}, ${therapeuticArea}, ${phase}.
+Keys: protocol, sap_outline, icf_outline, warnings, gcp_suggestions, disclaimer.
+Protocol: synopsis, background, objectives, study_design, study_population, eligibility_criteria, treatment_plan, efficacy_assessments, safety_assessments, statistical_considerations, ethics, monitoring_data_handling.
+SAP: analysis_populations, endpoints, analysis_approach.
+ICF: study_purpose, participation_overview, risks_and_benefits, voluntary_participation, participant_rights.
+Return ONLY raw JSON.`
 
     const response = await fetch(
       `${process.env.OPENAI_BASE_URL || 'https://aigateway.biocad.ru/api/v2'}/chat/completions`,
