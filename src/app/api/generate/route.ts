@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 
-const SYSTEM_PROMPT = 'You are an AI assistant helping draft a clinical study protocol. Return ONLY valid JSON. Keep content concise - max 2-3 sentences per section. No newlines in strings.'
+const SYSTEM_PROMPT = 'Return ONLY valid JSON. Keep content concise - max 1 sentence per section.'
 
 export async function POST(req: Request) {
   try {
@@ -10,8 +10,6 @@ export async function POST(req: Request) {
       therapeuticArea,
       phase,
       objective,
-      design,
-      population,
     } = await req.json()
 
     console.log('Study:', title)
@@ -23,18 +21,16 @@ export async function POST(req: Request) {
       )
     }
 
-    const userPrompt = `Generate a clinical study protocol draft based on these inputs:
+    const userPrompt = `Generate a clinical study protocol draft based on:
 
-Study title: ${title || 'Not specified'}
+Study: ${title || 'Not specified'}
 Therapeutic area: ${therapeuticArea || 'Not specified'}
 Phase: ${phase || 'Not specified'}
 Objective: ${objective || 'Not specified'}
-Design: ${design || 'Not specified'}
-Population: ${population || 'Not specified'}
 
 Return JSON with keys: protocol, sap_outline, icf_outline, warnings, gcp_suggestions, disclaimer.
 
-Protocol sections (1-2 sentences each): synopsis, background, objectives, study_design, study_population, eligibility_criteria, treatment_plan, efficacy_assessments, safety_assessments, statistical_considerations, ethics, monitoring_data_handling.
+Protocol sections (1 sentence each): synopsis, background, objectives, study_design, study_population, eligibility_criteria, treatment_plan, efficacy_assessments, safety_assessments, statistical_considerations, ethics, monitoring_data_handling.
 
 SAP sections: analysis_populations, endpoints, analysis_approach.
 
@@ -42,7 +38,7 @@ ICF sections: study_purpose, participation_overview, risks_and_benefits, volunta
 
 Warnings: array of potential issues. GCP suggestions: array of wording improvements.
 
-IMPORTANT: Return ONLY raw JSON. No markdown. Compact content, no newlines in strings.`
+IMPORTANT: Return ONLY raw JSON. No markdown. Compact content.`
 
     const response = await fetch(
       `${process.env.OPENAI_BASE_URL || 'https://aigateway.biocad.ru/api/v2'}/chat/completions`,
