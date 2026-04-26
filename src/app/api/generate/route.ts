@@ -53,7 +53,7 @@ IMPORTANT: Return ONLY raw JSON. No markdown.`
           Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
         },
         body: JSON.stringify({
-          model: process.env.OPENAI_MODEL || 'google/gemma-2-9b-it:free',
+          model: process.env.OPENAI_MODEL || 'meta-llama/llama-3.2-3b-instruct:free',
           messages: [
             { role: 'system', content: SYSTEM_PROMPT },
             { role: 'user', content: userPrompt },
