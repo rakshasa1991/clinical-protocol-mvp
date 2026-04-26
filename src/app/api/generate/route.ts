@@ -53,7 +53,7 @@ IMPORTANT: Return ONLY raw JSON. No markdown.`
           Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
         },
         body: JSON.stringify({
-          model: process.env.OPENAI_MODEL || 'qwen/qwen-2.5-7b-instruct:free',
+          model: process.env.OPENAI_MODEL || 'qwen/qwen3-next-80b-a3b-instruct:free',
           messages: [
             { role: 'system', content: SYSTEM_PROMPT },
             { role: 'user', content: userPrompt },
